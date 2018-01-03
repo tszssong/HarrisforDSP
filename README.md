@@ -11,4 +11,5 @@ targetConfigs里是可以在硬件上实现的版本，亲测可用
 ccs安装路径最好别有空格和特殊字符，会导致编译无法生成.lib
 很多问题可以通过修改堆栈大小解决：properties->build->c6000 linker->basic options
 
---------------c程序运行结果会和matlab完全一致
+--------------
+如果参数设置相同，c程序运行结果会和matlab程序HarrisMatch.m完全一致
