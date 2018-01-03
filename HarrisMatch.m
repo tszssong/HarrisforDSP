@@ -1,15 +1,12 @@
 clear all;
-% I1=imread('E:\502\picture\SAD_test_data\group1/img1.png');
-%  I2=imread('E:\502\picture\SAD_test_data\group1/img2.png');
- I1=imread('I:\E\502\picture\SAD_test_data\group1/img1.png');
- I2=imread('I:\E\502\picture\SAD_test_data\group1/img2.png');
-%  I1=imread('D:\502pic/KITTI110926130226 - 512.png');
-%  I2=imread('D:\502pic/KITTI110926130227 - 512.png');
+
+ I1=imread('I:\E\picture\SAD_test_data\group1/img1.png');
+ I2=imread('I:\E\picture\SAD_test_data\group1/img2.png');
 sss = 4; 
 scale = 8;
 [m,n,d]=size(I1);
 SI1 = zeros(m/sss, n/sss);
-%%%%%%%%%%%%ÏÂ²ÉÑù%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%ä¸‹é‡‡æ ·%%%%%%%%%%%%%%%%%%%%%%%%%
 for i=1:m/sss
     for j=1:n/sss
    %     simg(i,j) = mean( mean( img(i*4-3:i*4,j*4-3:j*4) ) );
@@ -31,7 +28,7 @@ Option.Edge = ceil(scale/sss);
 % Option.Edge = scale;
 Ipts1 = HarrisCorner(SI1,Option);
 Ipts2 = HarrisCorner(SI2,Option);
-%%%%%%%%½ÇµãÊÇÏÂ²ÉÑùºóµÄÍ¼Ïñ×ø±ê£¬½«Æä·Å´ó£¬»Ö¸´³ÉÔ­À´Í¼Ïñ×ø±ê%%%%%%%%%%%%
+%%%%%%%%è§’ç‚¹æ˜¯ä¸‹é‡‡æ ·åçš„å›¾åƒåæ ‡ï¼Œå°†å…¶æ”¾å¤§ï¼Œæ¢å¤æˆåŸæ¥å›¾åƒåæ ‡%%%%%%%%%%%%
 for i = 1:1:length(Ipts1)
     Ipts1(i).x = min(m-scale, Ipts1(i).x*sss);
     Ipts1(i).y = min(n-scale, Ipts1(i).y*sss);
@@ -40,14 +37,14 @@ for i = 1:1:length(Ipts2)
     Ipts2(i).x =  min(m-scale, Ipts2(i).x*sss);
     Ipts2(i).y = min(n-scale, Ipts2(i).y*sss);
 end
-%%%%ÏÔÊ¾Í¼Ïñ2ºÍ¼ì²âµ½µÄ½Çµã
+%%%%æ˜¾ç¤ºå›¾åƒ2å’Œæ£€æµ‹åˆ°çš„è§’ç‚¹
 figure, imshow(I2); hold on;
 for i=1:length(Ipts2)
      plot(Ipts2(i).x,Ipts2(i).y,'or');
  end
 
 tic;
-  errTH=0.1;        %Æ¥Åä¾àÀëãĞÖµ
+  errTH=0.1;        %åŒ¹é…è·ç¦»é˜ˆå€¼
 Distance = zeros( length(Ipts2),length(Ipts1) );
 signedI1 = double(I1);
 signedI2 = double(I2);
@@ -67,7 +64,7 @@ for i = 1:1:length(Ipts1)
        % ncc = abs(a-mean2(a))*abs(b-mean2(b))/std2(a)/std2(b);
         % Distance(j,i) = sum(sum(ncc))/((2*scale+1)^2-1);
        % Distance(j,i) =  abs( sum(sum(a.*b))/(norm(a)*norm(b)) - 1 );%
-        %¼Ğ½ÇÓàÏÒ
+        %å¤¹è§’ä½™å¼¦
        Distance(j,i) = sum( sum(Region) )/sum(sum(a));
         % Distance(j,i) = corr2(a,b);
     end
@@ -84,19 +81,19 @@ matched = zeros(length(Ipts1),4);
 % Show the best matches
 for i=1:length(Ipts1)
       if (minD(i)<errTH)
-        c=rand(1,3);  %ÓÃÓÚ»­²»Í¬ÑÕÉ«Í¼ [ 0.1933,    0.0263,    0.4688];
+        c=rand(1,3);  %ç”¨äºç”»ä¸åŒé¢œè‰²å›¾ [ 0.1933,    0.0263,    0.4688];
         plot([Ipts1(i).x Ipts2(cor2(i)).x+size(I1,2)],[Ipts1(i).y Ipts2(cor2(i)).y],'-','Color',c)
         plot([Ipts1(i).x Ipts2(cor2(i)).x+size(I1,2)],[Ipts1(i).y Ipts2(cor2(i)).y],'o','Color',c,'MarkerSize',8)
         text([Ipts1(i).x Ipts2(cor2(i)).x+size(I1,2)],[Ipts1(i).y Ipts2(cor2(i)).y],[num2str(i)],'color','b');
         matched(i,:) = [Ipts1(i).x, Ipts1(i).y, Ipts2(cor2(i)).x,Ipts2(cor2(i)).y]; 
       end
 end
- matched(all(matched==0,2),:) = []; %É¾³ıÈ«ÁãĞĞ
-%%%%%%%%%%%%%%%%%%%%%%%%%1024Í¼ÏñÏÂ²ÉÑùÒÔºóÏÔÊ¾Òª·Å´ó4±¶%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ matched(all(matched==0,2),:) = []; %åˆ é™¤å…¨é›¶è¡Œ
+%%%%%%%%%%%%%%%%%%%%%%%%%1024å›¾åƒä¸‹é‡‡æ ·ä»¥åæ˜¾ç¤ºè¦æ”¾å¤§4å€%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    % Show the best matches
 %   for i=1:length(Ipts1)
 %       if (minD(i)<errTH)
-%         c=rand(1,3);  %ÓÃÓÚ»­²»Í¬ÑÕÉ«Í¼ [ 0.1933,    0.0263,    0.4688];
+%         c=rand(1,3);  %ç”¨äºç”»ä¸åŒé¢œè‰²å›¾ [ 0.1933,    0.0263,    0.4688];
 %         plot([Ipts1(i).x*sss Ipts2(cor2(i)).x*sss+size(I1,2)],[Ipts1(i).y*sss Ipts2(cor2(i)).y*sss],'-','Color',c)
 %         plot([Ipts1(i).x*sss Ipts2(cor2(i)).x*sss+size(I1,2)],[Ipts1(i).y*sss Ipts2(cor2(i)).y*sss],'o','Color',c,'MarkerSize',8)
 %         text([Ipts1(i).x*sss Ipts2(cor2(i)).x*sss+size(I1,2)],[Ipts1(i).y*sss Ipts2(cor2(i)).y*sss],[num2str(i)],'color','b');
