@@ -11,13 +11,13 @@
 #include "test.h"
 //#include "timer.h"
 #include "soc_C6748.h"
-clock_t start,stop;	//Í³¼ÆÊ±¼äÓÃ
+clock_t start,stop;	//ç»Ÿè®¡æ—¶é—´ç”¨
 extern int Image_data1[];
 extern int Image_data2[];
-//int mydata[IMAGE_SIZE];	//Ô­Ê¼Í¼ÏñÎª1024Ê±ÓÃ´Ë´æ·ÅÏÂ²ÉÑùºóµÄ256Êı¾İ
-typedef struct ConerPoint	//½Çµã
+//int mydata[IMAGE_SIZE];	//åŸå§‹å›¾åƒä¸º1024æ—¶ç”¨æ­¤å­˜æ”¾ä¸‹é‡‡æ ·åçš„256æ•°æ®
+typedef struct ConerPoint	//è§’ç‚¹
 {
-    int x, y, id;			//×ø±ê£¬³ß¶È£¬±àºÅ
+    int x, y, id;			//åæ ‡ï¼Œå°ºåº¦ï¼Œç¼–å·
 }ConerPoint;
 ConerPoint Coner1[MAX_CONERS],Coner2[MAX_CONERS];
 void Sample(int* src, int* dst, int w, int h,int ratio)
@@ -37,12 +37,12 @@ void Sample(int* src, int* dst, int w, int h,int ratio)
 
 }
 /*******************************************************************************
- * HarrisËã·¨ÊµÏÖ
- * ²ÎÊı src£ºÍ¼ÏñÊ×µØÖ·£¬coner:»ñÈ¡µ½µÄ½Çµã£¬th£ºharrisãĞÖµ£¬wÍ¼Ïñ¿í¶È£¬hÍ¼Ïñ¸ß¶È
+ * Harrisç®—æ³•å®ç°
+ * å‚æ•° srcï¼šå›¾åƒé¦–åœ°å€ï¼Œconer:è·å–åˆ°çš„è§’ç‚¹ï¼Œthï¼šharrisé˜ˆå€¼ï¼Œwå›¾åƒå®½åº¦ï¼Œhå›¾åƒé«˜åº¦
  * *****************************************************************************/
 int Harris(int* src, ConerPoint* coner, double th, int w, int h)
 {
-	int N_Harris = 0;	//Harris½Çµã¸öÊı
+	int N_Harris = 0;	//Harrisè§’ç‚¹ä¸ªæ•°
 	int* pData = (int*)(src);			//INPUT_IMAGE_ADDRESS;
 	double* pR = (double*)R_IMAGE_ADDRESS;
 	int* pI2x = (int*)I2x_IMAGE_ADDRESS;
@@ -62,18 +62,18 @@ int Harris(int* src, ConerPoint* coner, double th, int w, int h)
 	{
 		for(i=0;i< w;i++)
 		{
-			{if(i==0)	//×ó±ß½ç£¬×óÏñËØµãÎª0
+			{if(i==0)	//å·¦è¾¹ç•Œï¼Œå·¦åƒç´ ç‚¹ä¸º0
 				{left_pix = 0;right_pix = (int)*(pData+1);}
-			else if( i==( w-1) )	//ÓÒ±ß½ç£¬ÓÒ²àÏñËØµãÎª0
+			else if( i==( w-1) )	//å³è¾¹ç•Œï¼Œå³ä¾§åƒç´ ç‚¹ä¸º0
 				{left_pix = (int)*(pData-1);right_pix = 0;}
-			else		//ÖĞ¼äÇøÓò
+			else		//ä¸­é—´åŒºåŸŸ
 				{left_pix = (int)*(pData-1); right_pix = (int)*(pData+1);} }
 
-			{if(j==0)	//ÉÏ±ß½ç
+			{if(j==0)	//ä¸Šè¾¹ç•Œ
 				{up_pix = 0;down_pix = *(pData+ w);}
-			else if( j==(h-1) )	//ÏÂ±ß½ç
+			else if( j==(h-1) )	//ä¸‹è¾¹ç•Œ
 				{up_pix = *(pData- w);down_pix = 0;}
-			else		//ÖĞ¼äÇøÓò
+			else		//ä¸­é—´åŒºåŸŸ
 				{up_pix = *(pData- w);down_pix = *(pData+ w);} }
 			*pI2x++ = (right_pix - left_pix)*(right_pix - left_pix);	//(*Ix)*(*Ix);
 			*pI2y++ = (down_pix - up_pix)*(down_pix - up_pix);			//(*Iy)*(*Iy);
@@ -82,12 +82,12 @@ int Harris(int* src, ConerPoint* coner, double th, int w, int h)
 
 		}
 	}
-	pI2x = (int*)I2x_IMAGE_ADDRESS;		//Ö¸»ØÊ×µØÖ·£¬ÒÔ±¸ÂË²¨¼ÆËã
+	pI2x = (int*)I2x_IMAGE_ADDRESS;		//æŒ‡å›é¦–åœ°å€ï¼Œä»¥å¤‡æ»¤æ³¢è®¡ç®—
 	pI2y = (int*)I2y_IMAGE_ADDRESS;
 	pIxy = (int*)Ixy_IMAGE_ADDRESS;
 
 	for(j=0;j<h;j++)
-	{//ĞĞÂË²¨
+	{//è¡Œæ»¤æ³¢
 		for(i=0;i< w;i++)
 		{
 			temp_G2x = 0.0f; temp_G2y = 0.0f; temp_Gxy = 0.0f;
@@ -100,7 +100,7 @@ int Harris(int* src, ConerPoint* coner, double th, int w, int h)
 					temp_Gxy += *( pIxy+(ii-NHCenter) ) * (*(pH+ii));
 				}
 			}
-			*pI2xR++ = temp_G2x;	//×¢ÒâI2xÊÇÕûĞÎ£¬I2xRÊÇdouble£¬ÕâÀï·¢ÉúÁËÊı¾İ¸ñÊ½µÄ±ä»¯
+			*pI2xR++ = temp_G2x;	//æ³¨æ„I2xæ˜¯æ•´å½¢ï¼ŒI2xRæ˜¯doubleï¼Œè¿™é‡Œå‘ç”Ÿäº†æ•°æ®æ ¼å¼çš„å˜åŒ–
 			*pI2yR++ = temp_G2y;
 			*pIxyR++ = temp_Gxy;
 			pI2x++;
@@ -108,11 +108,11 @@ int Harris(int* src, ConerPoint* coner, double th, int w, int h)
 			pIxy++;
 		}
 	}
-	pI2xR = (double*)I2xR_IMAGE_ADDRESS;	//Ö¸»ØĞĞÂË²¨ºóµÄÊı¾İÊ×µØÖ·£¬½øĞĞÁĞÂË²¨
+	pI2xR = (double*)I2xR_IMAGE_ADDRESS;	//æŒ‡å›è¡Œæ»¤æ³¢åçš„æ•°æ®é¦–åœ°å€ï¼Œè¿›è¡Œåˆ—æ»¤æ³¢
 	pI2yR = (double*)I2yR_IMAGE_ADDRESS;
 	pIxyR = (double*)IxyR_IMAGE_ADDRESS;
 	for(j=0;j<h;j++)
-	{//ÁĞÂË²¨
+	{//åˆ—æ»¤æ³¢
 		for(i=0;i<w;i++)
 		{
 			temp_G2x = 0.0f; temp_G2y = 0.0f; temp_Gxy = 0.0f;
@@ -127,7 +127,7 @@ int Harris(int* src, ConerPoint* coner, double th, int w, int h)
 			}
 
 			temp_R =  ( temp_G2x*temp_G2y - temp_Gxy*temp_Gxy ) - 0.06*(temp_G2x+temp_G2y)*(temp_G2x+temp_G2y);
-			if( (temp_R-max_R)>0.5 )	//ÕÒµ½RµÄ×î´óÖµ
+			if( (temp_R-max_R)>0.5 )	//æ‰¾åˆ°Rçš„æœ€å¤§å€¼
 				{max_R = temp_R;temp_Ri=i,temp_Rj=j;}
 			*pR++ = temp_R;
 			*pG2x++ = temp_G2x;
@@ -139,7 +139,7 @@ int Harris(int* src, ConerPoint* coner, double th, int w, int h)
 		}
 	}
 	printf("max R = %.2f,(%d, %d)\n",max_R, temp_Rj+1 , temp_Ri+1);
-	pR = (double*)R_IMAGE_ADDRESS;		//Ö¸»ØRÊ×µØÖ·£¬Ñ°ÕÒ½Çµã
+	pR = (double*)R_IMAGE_ADDRESS;		//æŒ‡å›Ré¦–åœ°å€ï¼Œå¯»æ‰¾è§’ç‚¹
 	double *ptmpR;
 	for(j=1;j<h-1;j++)
 	{
@@ -149,7 +149,7 @@ int Harris(int* src, ConerPoint* coner, double th, int w, int h)
 			temp_R = *ptmpR;
 			if( (temp_R>(th*max_R))&&(N_Harris<MAX_CONERS) )
 			{
-				//3*3ÁÚÓòÄÚ·Ç¼«´óÖµÒÖÖÆ,²»¿¼ÂÇÍ¼Ïñ±ß½çÉÏµÄµã
+				//3*3é‚»åŸŸå†…éæå¤§å€¼æŠ‘åˆ¶,ä¸è€ƒè™‘å›¾åƒè¾¹ç•Œä¸Šçš„ç‚¹
 				if( (temp_R>*(ptmpR-1)) &&
 					(temp_R>*(ptmpR+1)) &&
 					(temp_R>*(ptmpR-w)) &&
@@ -171,7 +171,7 @@ int Harris(int* src, ConerPoint* coner, double th, int w, int h)
 	return N_Harris;
 }
 
-//Ñ°ÕÒdoubleĞÍÊı×éÖĞ×îĞ¡µÄÊı£¬·µ»Ø¸Ã×îĞ¡ÖµËùÔÚµÄÎ»ÖÃ
+//å¯»æ‰¾doubleå‹æ•°ç»„ä¸­æœ€å°çš„æ•°ï¼Œè¿”å›è¯¥æœ€å°å€¼æ‰€åœ¨çš„ä½ç½®
 int getMin(double *data, int number)
 {
 	int i, idx = 0;
@@ -188,12 +188,12 @@ int getMin(double *data, int number)
 }
 typedef struct MatchedCorner
 {
-	double x1, y1, x2, y2;		//Æ¥ÅäÉÏµÄµã×ø±ê
-	double distance;			//ÃèÊö·û¾àÀë
-	int id;						//ĞòºÅ
-}MatchedCorner;	//Æ¥ÅäÉÏµÄ½Çµã
+	double x1, y1, x2, y2;		//åŒ¹é…ä¸Šçš„ç‚¹åæ ‡
+	double distance;			//æè¿°ç¬¦è·ç¦»
+	int id;						//åºå·
+}MatchedCorner;	//åŒ¹é…ä¸Šçš„è§’ç‚¹
 MatchedCorner matchedCorner[MAX_CONERS];
-//·µ»ØÆ¥ÅäÉÏµÄ½Çµã
+//è¿”å›åŒ¹é…ä¸Šçš„è§’ç‚¹
 int HarrisMatches(int* src1, int* src2, ConerPoint* c1, ConerPoint* c2, int nc1, int nc2, int w, int h)
 {
 	int i,j,k,t,r,l;
@@ -238,7 +238,7 @@ int HarrisMatches(int* src1, int* src2, ConerPoint* c1, ConerPoint* c2, int nc1,
 			matchedCorner[t].y2 = matchedCorner[t - 1].y2;
 			matchedCorner[t].distance = matchedCorner[t - 1].distance;
 		}
-		matchedCorner[t].id = j;	//id¼ÇÂ¼Æ¥Åäµ½µÄµãÔÚÌØÕ÷µã¶àµÄÌØÕ÷¼¯ºÏÖĞµÄÎ»ÖÃ
+		matchedCorner[t].id = j;	//idè®°å½•åŒ¹é…åˆ°çš„ç‚¹åœ¨ç‰¹å¾ç‚¹å¤šçš„ç‰¹å¾é›†åˆä¸­çš„ä½ç½®
 		matchedCorner[t].x1 = c1[i].x;
 		matchedCorner[t].y1 = c1[i].y;
 		matchedCorner[t].x2 = c2[j].x;
@@ -253,18 +253,11 @@ int main(void) {
 	//L2CFG  |= 0X04;
 	//L1PCFG |= 0X04;
 	//L1DCFG |= 0X04;
-	//MAR192 = 1;										//µØÖ·0xc0000000-0xcfffffffÔÊĞíCache
-	//Sample((int *)Image_data, mydata, 1024, 1024);	//Ô­Ê¼Í¼Ïñ1024*1024Ê±ÓÃ´Ëº¯ÊıÏÂ²ÉÑù
+	//MAR192 = 1;										//åœ°å€0xc0000000-0xcfffffffå…è®¸Cache
+	//Sample((int *)Image_data, mydata, 1024, 1024);	//åŸå§‹å›¾åƒ1024*1024æ—¶ç”¨æ­¤å‡½æ•°ä¸‹é‡‡æ ·
 	int* mydata = (int*)IMAGE_ADDRESS;
 	printf("Harris start: Sample = %d , Region = %d\n", SAMPLE, SCALE);
-	T0_TGCR = 0;
-	T0_TIM12 = 0;
-	T0_TIM34 = 0;
-	T0_TGCR = 3;
-	T0_PRD12 = 0XFFFFFFFF;
-	T0_PRD34 = 0XFFFFFFFF;
-	printf("%x,%x\n",T0_TIM34,T0_TIM12);	//È·¶¨³õÊ¼¼ÆÊıÖµÎª0
-	T0_TCR = 0x00000040;
+	
 	Sample((int *)Image_data1, mydata, IMAGE_WIDTH, IMAGE_HEIGHT, SAMPLE);
 	start = clock();
 	n1 = Harris( (int *)mydata,  Coner1, HARRIS_TH , SAMPLE_W, SAMPLE_H);
@@ -280,7 +273,7 @@ int main(void) {
 
 	Sample((int *)Image_data2, mydata, IMAGE_WIDTH, IMAGE_HEIGHT, SAMPLE);
 	start = clock();
-	n2 = Harris( (int *)mydata,  Coner2, HARRIS_TH , SAMPLE_W, SAMPLE_H); 	//n2Í¼Ïñ2½Çµã¸öÊı
+	n2 = Harris( (int *)mydata,  Coner2, HARRIS_TH , SAMPLE_W, SAMPLE_H); 	//n2å›¾åƒ2è§’ç‚¹ä¸ªæ•°
 	stop=clock();
 		printf("the cycle to get %d corner2 is %d\n",n2,stop-start);
 
@@ -297,7 +290,7 @@ int main(void) {
 	printf("the cycle to match %d+%d corners are: %d\n",n1,n2,stop-start);
 
 	printf("Matched points: %d\n", nMatched);
-		for(i=0;i<n1;i++)		//°´ÕÕ¾àÀë´ÓĞ¡µ½´óÊä³öÆ¥ÅäÌØÕ÷µã
+		for(i=0;i<n1;i++)		//æŒ‰ç…§è·ç¦»ä»å°åˆ°å¤§è¾“å‡ºåŒ¹é…ç‰¹å¾ç‚¹
 			printf("%2d: matchedCorner[%2d] (%3.0f,%3.0f,%3.0f,%3.0f) d: %.5f\n", i, matchedCorner[i].id, matchedCorner[i].x1, matchedCorner[i].y1, matchedCorner[i].x2, matchedCorner[i].y2, matchedCorner[i].distance);
 
 	printf("Harris end!\n");
